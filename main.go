@@ -2,24 +2,33 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gocolly/colly/v2"
 )
 
 func main() {
-	c := colly.NewCollector()
+	var (
+		err error
+		url = "https://mrbilit.com/buses/mashhad-tehran?departureDate=1403-03-09"
+	)
+	c := colly.NewCollector(colly.AllowedDomains("mrbilit.com", "www.mrbilit.com"))
 
 	// Find and visit all links
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+	c.OnHTML("div", func(e *colly.HTMLElement) {
+		fmt.Println("OnHTML ", e.Text)
+	})
 
-		fmt.Println("OnHTML ", e.Attr("href"))
-		fmt.Println("OnHTML name: ", e.Name)
-		//e.Request.Visit(e.Attr("href"))
+	c.OnError(func(r *colly.Response, err error) {
+		log.Printf("%w", err)
 	})
 
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
+		log.Printf("Request: %s", r.URL)
 	})
-
-	c.Visit("https://safar724.com/bus/mashhad-gonabad?date=1403-03-08")
+	
+	err = c.Visit(url)
+	if err != nil {
+		log.Println(err)
+	}
 }
