@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  redis:
+    container_name: redis
+    image: ghcr.io/milad75rasouli/redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    # enviroment:
