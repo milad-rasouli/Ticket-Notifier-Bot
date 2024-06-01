@@ -1,34 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"log"
+	"time"
 
-	"github.com/gocolly/colly/v2"
+	"github.com/chromedp/chromedp"
 )
 
 func main() {
-	var (
-		err error
-		url = "https://mrbilit.com/buses/mashhad-tehran?departureDate=1403-03-09"
+	ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithLogf(log.Printf))
+	defer cancel()
+
+	ctx, cancel = context.WithTimeout(ctx, 60*time.Second)
+	defer cancel()
+
+	var htmlContent string
+	err := chromedp.Run(ctx,
+		chromedp.Navigate(`https://mrbilit.com/buses/mashhad-tehran?departureDate=1403-03-09`),
+		chromedp.WaitVisible(`div.trip-card-wrapper`, chromedp.ByQuery),
+		chromedp.OuterHTML(`div.trip-card-wrapper`, &htmlContent, chromedp.NodeVisible, chromedp.ByQuery),
 	)
-	c := colly.NewCollector(colly.AllowedDomains("mrbilit.com", "www.mrbilit.com"))
-
-	// Find and visit all links
-	c.OnHTML("div", func(e *colly.HTMLElement) {
-		fmt.Println("OnHTML ", e.Text)
-	})
-
-	c.OnError(func(r *colly.Response, err error) {
-		log.Printf("%w", err)
-	})
-
-	c.OnRequest(func(r *colly.Request) {
-		log.Printf("Request: %s", r.URL)
-	})
-	
-	err = c.Visit(url)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
+
+	log.Println(htmlContent)
 }
