@@ -37,15 +37,6 @@ func main() {
 		busFetcher = fetcher.NewBusTicketFetcher(logger.Sugar().Named("bus fetcher"), cfg.URL, cfg.ContentType)
 	}
 
-	// var jsonStr = []byte(`{
-	// 	"from": 31310000,
-	// 	"to": 11320000,
-	// 	"date": "2024-06-03",
-	// 	"includeClosed": true,
-	// 	"includePromotions": true,
-	// 	"loadFromDbOnUnavailability": true,
-	// 	"includeUnderDevelopment": true
-	// }`)
 	bus, err := busFetcher.FetchBusTicket(31310000, 11320000, "2024-06-03")
 	if err != nil {
 		sugar.Fatalln(err)

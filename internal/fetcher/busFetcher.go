@@ -25,9 +25,6 @@ func NewBusTicketFetcher(l *zap.SugaredLogger, u, c string) *BusTicketFetcher {
 	}
 }
 func (b *BusTicketFetcher) FetchBusTicket(from, to int64, date string) (entity.Bus, error) {
-	// var (
-	// 	url = "https://bus.mrbilit.ir/api/GetBusServices"
-	// )
 	var (
 		bus entity.Bus
 	)
@@ -44,7 +41,6 @@ func (b *BusTicketFetcher) FetchBusTicket(from, to int64, date string) (entity.B
 	}`, from, to, date))
 	b.sugar.Infof("bus request %s\n", jsonStr)
 	req, err := http.NewRequest("POST", b.url, bytes.NewBuffer(jsonStr))
-	// req.Header.Set("Content-Type", )
 	req.Header.Set("Content-Type", b.contentType)
 
 	client := &http.Client{}
