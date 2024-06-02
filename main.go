@@ -31,14 +31,22 @@ func main() {
 	sugar := logger.Sugar()
 
 	sugar.Infoln("server is running")
-
 	sugar.Infof("config %+v", cfg)
-	return
+
 	{
-		busFetcher = fetcher.NewBusTicketFetcher(logger.Sugar().Named("bus fetcher"), "url", "contectType")
+		busFetcher = fetcher.NewBusTicketFetcher(logger.Sugar().Named("bus fetcher"), cfg.URL, cfg.ContentType)
 	}
 
-	bus, err := busFetcher.FetchBusTicket(1, 1, "")
+	// var jsonStr = []byte(`{
+	// 	"from": 31310000,
+	// 	"to": 11320000,
+	// 	"date": "2024-06-03",
+	// 	"includeClosed": true,
+	// 	"includePromotions": true,
+	// 	"loadFromDbOnUnavailability": true,
+	// 	"includeUnderDevelopment": true
+	// }`)
+	bus, err := busFetcher.FetchBusTicket(31310000, 11320000, "2024-06-03")
 	if err != nil {
 		sugar.Fatalln(err)
 	}

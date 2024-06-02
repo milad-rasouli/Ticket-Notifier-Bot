@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	url         string
-	contentType string
+	URL         string
+	ContentType string
 }
 
 func (c *Config) Read() error {
@@ -19,7 +19,7 @@ func (c *Config) Read() error {
 	if err != nil {
 		return err
 	}
-	c.url = os.Getenv("BUS_TICKET_URL")
-	c.contentType = os.Getenv("BUS_TICKET_CONTENT_TYPE")
+	c.URL = os.Getenv("BUS_TICKET_URL")
+	c.ContentType = os.Getenv("BUS_TICKET_CONTENT_TYPE")
 	return nil
 }

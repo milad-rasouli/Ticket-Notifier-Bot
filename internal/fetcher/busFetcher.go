@@ -33,25 +33,16 @@ func (b *BusTicketFetcher) FetchBusTicket(from, to int64, date string) (entity.B
 	)
 	b.sugar.Infoln("POST URL: ", b.url)
 
-	// var jsonStr = []byte(`{
-	// 	"from": 31310000,
-	// 	"to": 11320000,
-	// 	"date": "2024-06-03",
-	// 	"includeClosed": true,
-	// 	"includePromotions": true,
-	// 	"loadFromDbOnUnavailability": true,
-	// 	"includeUnderDevelopment": true
-	// }`)
-
 	var jsonStr = []byte(fmt.Sprintf(`{
 		"from": %d,
 		"to": %d,
-		"date": %s,
+		"date": "%s",
 		"includeClosed": true,
 		"includePromotions": true,
 		"loadFromDbOnUnavailability": true,
 		"includeUnderDevelopment": true
 	}`, from, to, date))
+	b.sugar.Infof("bus request %s\n", jsonStr)
 	req, err := http.NewRequest("POST", b.url, bytes.NewBuffer(jsonStr))
 	// req.Header.Set("Content-Type", )
 	req.Header.Set("Content-Type", b.contentType)
@@ -65,6 +56,7 @@ func (b *BusTicketFetcher) FetchBusTicket(from, to int64, date string) (entity.B
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
+	// b.sugar.Infof("bus response %s", string(body)) // TODO: Get the error in case of response!
 	err = json.Unmarshal(body, &bus)
 	if err != nil {
 		b.sugar.Errorf("unmarshal bus error %w", err)
